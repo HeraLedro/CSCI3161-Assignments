@@ -371,7 +371,6 @@ void init()
 	{
 		initPhotons(&photons[i]);
 	}
-	initPhotons(photons);
 	for (i = 0; i < MAX_ASTEROIDS; i++)
 	{
 		if (i % 2 == 0) {
