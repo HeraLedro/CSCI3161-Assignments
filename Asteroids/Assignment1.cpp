@@ -97,8 +97,6 @@ static void MoveAsteroid(Asteroid* a);
 static int InAsteroidBounds(Asteroid* a, Photon* p);
 static int CheckPointCollision(Asteroid* a, float x, float y);
 static int CheckShipCollision(Ship* s, Asteroid* a);
-static int TypeACollision(float x, float y, Asteroid* a);
-static int TypeBCollision(float x, float y, Ship* s);
 static void DestroyAsteroid(Asteroid* a);
 static void DestroyShip(Ship* s);
 static void DrawShipDust(Ship* s);
@@ -723,45 +721,6 @@ int CheckShipCollision(Ship* s, Asteroid* a)
 
 	return collision;
 
-}
-
-/*	Checks that the vertex (represented by (x, y)) of the ship is within the polygon
-	of the asteroid*/
-int TypeACollision(float x, float y, Asteroid* a)
-{
-	int xCount = 0, yCount = 0;	//	Number of intersections
-
-	/*	For every unit between the point's x-axis and the center of the
-		asteroid's x-axis, divide into 100 segments and check if there is an
-		intersection at each segment.*/
-	for (float i = 0; i < fabs(a->x - x); i += 0.01)
-	{
-
-	}
-
-	/*	For every unit between the point's y-axis and the center of the
-	asteroid's y-axis, divide into 100 segments and check if there is an
-	intersection at each segment.*/
-	for (float i = 0; i < fabs(a->y - y); i += 0.01)
-	{
-		/*if ()
-		{
-		yCount++;
-		}*/
-	}
-	if (xCount % 2 == 1 || yCount % 2 == 1)
-	{
-		/*DestroyAsteroid(a);
-		p->active = 0;
-		p->x = ship.x;
-		p->y = ship.y;*/
-	}
-	return 1;
-}
-
-int TypeBCollision(float x, float y, Ship* s)
-{
-	return 1;
 }
 
 void DestroyAsteroid(Asteroid* a)
