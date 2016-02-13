@@ -92,6 +92,7 @@ static void DrawAsteroidDust(Asteroid* a);
 static void myIdle();
 static void FirePhoton(Photon* p);
 static void MoveShip(Ship* s);
+static void MovePhoton(Photon* p);
 static void MoveAsteroid(Asteroid* a);
 static int InAsteroidBounds(Asteroid* a, Photon* p);
 static int CheckPointCollision(Asteroid* a, float x, float y);
@@ -126,7 +127,7 @@ int main(int argc, char *argv[])
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(500, 500);
+	glutInitWindowSize(750, 750);
 	glutCreateWindow("Asteroids");
 	buildCircle();
 	glutDisplayFunc(myDisplay);
@@ -211,7 +212,13 @@ void myTimer(int value)
 	}
 	MoveShip(&ship);
 	drawShip(&ship);
-
+	for (int i = 0; i < MAX_PHOTONS; i++)
+	{
+		if (photons[i].active == 1)
+		{
+			MovePhoton(&photons[i]);
+		}
+	}
 
 
 	/* advance photon laser shots, eliminating those that have gone past
@@ -289,9 +296,13 @@ void myKey(unsigned char key, int x, int y)
 	*	starting and/or pausing the game, etc.
 	*/
 
-	if (key == 'a')
+	if (key == 32)
 	{
 		fire = 1;
+	}
+	if (key == 'q')
+	{
+		exit(0);
 	}
 }
 
@@ -371,9 +382,10 @@ void init()
 	{
 		initPhotons(&photons[i]);
 	}
+	initPhotons(photons);
 	for (i = 0; i < MAX_ASTEROIDS; i++)
 	{
-		if (i % 2 == 0) {
+		if (i % 3 == 0) {
 			double x = 0, y = 0;
 			while (fabs(myRandom(0, 100) - ship.x) < 10)
 			{
@@ -524,8 +536,8 @@ void FirePhoton(Photon* p)
 	p->active = 1;
 	p->x = ship.x;
 	p->y = ship.y;
-	p->dx = -0.03*sin(ship.phi);
-	p->dy = 0.03*cos(ship.phi);
+	p->dx = -1.5*sin(ship.phi);
+	p->dy = 1.5*cos(ship.phi);
 	printf("Active Asteroids: %d\n", activeAsteroids);
 }
 
@@ -536,14 +548,21 @@ void drawPhoton(Photon *p)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glPushMatrix();
-	p->x += p->dx;
-	p->y += p->dy;
+
 	//printf("(%f, %f)\n", p->x, p->y);
 	//myTranslate2D(p->x, p->y);
 	glBegin(GL_POINTS);
 	glVertex2f(p->x, p->y);
 	glEnd();
 	glPopMatrix();
+}
+
+void MovePhoton(Photon* p)
+{
+	p->x += p->dx;
+	p->y += p->dy;
+	/*	If the photon extends past the limits of the screen,
+		terminate it.*/
 	if (p->x < 0 || p->y < 0 || p->x > xMax || p->y > yMax)
 	{
 		p->x = ship.x;
