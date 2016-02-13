@@ -1,0 +1,4 @@
+Assignment1.cpp:12:21: fatal error: GL/glut.h: No such file or directory
+ #include <GL/glut.h>
+                     ^
+compilation terminated.
