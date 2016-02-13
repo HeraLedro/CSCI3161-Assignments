@@ -393,7 +393,7 @@ void init()
 			{
 				y = myRandom(0, 100);
 			}
-			initAsteroid(&asteroids[i], x, y, 20);
+			initAsteroid(&asteroids[i], x, y, 15);
 			activeAsteroids++;
 		}
 		else

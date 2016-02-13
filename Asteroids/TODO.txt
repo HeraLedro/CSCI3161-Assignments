@@ -1,0 +1,11 @@
+TODO:
+    -   PRIORITY
+        -   Keystroke to switch between circular and polygonal asteroids
+            (assignment requirement)
+        -
+
+    -   Not Priority
+        -   Modulate the code - split up into Ship, Asteroid, and Photon
+            classes.
+        -
+        
