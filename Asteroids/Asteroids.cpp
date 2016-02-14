@@ -87,6 +87,7 @@ static void initPhotons(Photon* p);
 static void	drawShip(Ship *s);
 static void	drawPhoton(Photon *p);
 static void	drawAsteroid(Asteroid *a);
+static void DrawCircle(Asteroid* a);
 static void DrawAsteroidDust(Asteroid* a);
 
 static void myIdle();
@@ -109,7 +110,7 @@ static double	myRandom(double min, double max);
 
 static int		up = 0, down = 0, left = 0, right = 0, fire=0;	/* state of cursor keys */
 static double	xMax, yMax;
-static int		activeAsteroids = 0;
+static int		activeAsteroids = 0, roundAsteroids = 0;	//	Number of alive asteroids and state of asteroids: circular or polygonal
 static Ship		ship;
 static Photon	photons[MAX_PHOTONS];
 static Asteroid	asteroids[MAX_ASTEROIDS*MAX_ASTEROIDS];		//	Changed to allow for splitting asteroids, which is
@@ -297,6 +298,10 @@ void myKey(unsigned char key, int x, int y)
 	if (key == 32)
 	{
 		fire = 1;
+	}
+	if(key == s)
+	{
+
 	}
 	if (key == 'q')
 	{
@@ -578,12 +583,31 @@ void drawAsteroid(Asteroid *a)
 
 	myTranslate2D(a->x, a->y);
 	myRotate2D(a->phi);
-	/*	How do we rotate the asteroid on its axis?	*/
 
 	glBegin(GL_POLYGON);
 	for (int i = 0; i < a->nVertices; i++)
 	{
 		glVertex2f(a->coords[i].x, a->coords[i].y);
+	}
+	glEnd();
+
+	glPopMatrix();
+}
+
+void DrawCircle(Asteroid* a)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glPushMatrix();
+
+
+	myTranslate2D(a->x, a->y);
+	myRotate2D(a->phi);
+
+	glBegin(GL_POLYGON);
+	for (i = 0; i<40; i++)
+	{
+		glVertex2d(cos(i*M_PI / 20.0), sin(i*M_PI / 20.0));
 	}
 	glEnd();
 
