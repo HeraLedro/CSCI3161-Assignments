@@ -1,9 +1,3 @@
-/*
-*	asteroids.c
-*
-*	skeleton code for an OpenGL implementation of the Asteroids video game
-*/
-
 #include "stdafx.h"
 #include <stdlib.h>
 #include <string.h>
@@ -66,7 +60,7 @@ typedef struct {
 
 typedef struct {
 	int	active, nVertices;
-	double	x, y, rad, phi, dx, dy, dphi, rot;
+	double	x, y, rad, phi, dx, dy, dphi;
 	Coords	coords[MAX_VERTICES];
 } Asteroid;
 
@@ -108,14 +102,14 @@ static double	myRandom(double min, double max);
 
 /* -- global variables ------------------------------------------------------ */
 
-static int		up = 0, down = 0, left = 0, right = 0, fire=0;	/* state of cursor keys */
+static int		up = 0, down = 0, left = 0, right = 0, fire = 0;	/* state of cursor keys */
 static double	xMax, yMax;
 static int		activeAsteroids = 0, roundAsteroids = 0;	//	Number of alive asteroids and state of asteroids: circular or polygonal
 static Ship		ship;
 static Photon	photons[MAX_PHOTONS];
 static Asteroid	asteroids[MAX_ASTEROIDS*MAX_ASTEROIDS];		//	Changed to allow for splitting asteroids, which is
 															//		upper bound by MaxAsteroids^2
-//static Coords	shipCoords[] = { {0, 3}, {-2, -3}, {0, -1.5}, {2, -3} };
+
 
 
 /* -- main ------------------------------------------------------------------ */
@@ -164,13 +158,20 @@ void myDisplay()
 
 	drawShip(&ship);
 
-	for (i = 0; i<MAX_PHOTONS; i++)
+	for (i = 0; i < MAX_PHOTONS; i++)
+	{
 		if (photons[i].active)
+		{
 			drawPhoton(&photons[i]);
-
-	for (i = 0; i<MAX_ASTEROIDS; i++)
+		}
+	}
+	for (i = 0; i < MAX_ASTEROIDS; i++)
+	{
 		if (asteroids[i].active)
+		{
 			drawAsteroid(&asteroids[i]);
+		}
+	}
 
 	glutSwapBuffers();
 }
@@ -192,13 +193,13 @@ void myTimer(int value)
 	}
 	if (up == 1)
 	{
-		ship.dx += -0.1*sin(ship.phi)/2;
-		ship.dy += 0.1*cos(ship.phi)/2;
+		ship.dx += -0.1*sin(ship.phi) / 2;
+		ship.dy += 0.1*cos(ship.phi) / 2;
 	}
 	if (down == 1)
 	{
-		ship.dx += 0.1*sin(ship.phi)/2;
-		ship.dy += -0.1*cos(ship.phi)/2;
+		ship.dx += 0.1*sin(ship.phi) / 2;
+		ship.dy += -0.1*cos(ship.phi) / 2;
 	}
 
 	if (ship.dx > 3)
@@ -237,11 +238,14 @@ void myTimer(int value)
 	/* advance asteroids */
 	for (int i = 0; i < MAX_ASTEROIDS; i++)
 	{
-		MoveAsteroid(&asteroids[i]);
-		/*	Check if the asteroid has been hit by a photon.	*/
-		for (int j = 0; j < MAX_PHOTONS; j++)
+		if (asteroids[i].active)
 		{
-			InAsteroidBounds(&asteroids[i], &photons[j]);
+			MoveAsteroid(&asteroids[i]);
+			/*	Check if the asteroid has been hit by a photon.	*/
+			for (int j = 0; j < MAX_PHOTONS; j++)
+			{
+				InAsteroidBounds(&asteroids[i], &photons[j]);
+			}
 		}
 	}
 
@@ -299,9 +303,16 @@ void myKey(unsigned char key, int x, int y)
 	{
 		fire = 1;
 	}
-	if(key == s)
+	if (key == 's')
 	{
-
+		if (roundAsteroids)
+		{
+			roundAsteroids = 0;
+		}
+		else
+		{
+			roundAsteroids = 1;
+		}
 	}
 	if (key == 'q')
 	{
@@ -444,13 +455,13 @@ void initAsteroid(Asteroid *a, double x, double y, double size)
 	a->phi = 0.0;
 	a->dx = myRandom(-0.8, 0.8);
 	a->dy = myRandom(-0.8, 0.8);
-	a->dphi = myRandom(-0.2, 0.2);
+	a->dphi = myRandom(-0.1, 0.1);
 
 	a->nVertices = 6 + rand() % (MAX_VERTICES - 6);
 	for (i = 0; i<a->nVertices; i++)
 	{
 		theta = 2.0*M_PI*i / a->nVertices;
-		r = size*myRandom(2.0, 3.0)/5;
+		r = size*myRandom(2.0, 3.0) / 5;
 		a->coords[i].x = -r*sin(theta);
 		a->coords[i].y = r*cos(theta);
 	}
@@ -467,7 +478,6 @@ void initAsteroid(Asteroid *a, double x, double y, double size)
 			a->rad = sqrt(dist);
 		}
 	}
-	a->rot = myRandom(0, 0.1);
 	a->active = 1;
 }
 
@@ -492,21 +502,21 @@ void drawShip(Ship *s)
 
 void DrawShipDust(Ship* s)
 {
-		s->vertices[0].x = s->vertices[0].y += myRandom(0, 0.005);
-		s->vertices[1].x = s->vertices[1].y += myRandom(0, 0.005);
-		s->vertices[2].x = s->vertices[2].y += myRandom(0, 0.005);
-		s->vertices[3].x = s->vertices[3].y += myRandom(0, 0.005);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-			glBegin(GL_LINES);
-			for (int i = 0; i < 3; i++)
-			{
-				glVertex2f(s->vertices[i].x, s->vertices[i].y);
-				glVertex2f(s->vertices[i + 1].x, s->vertices[i + 1].y);
-			}
-			glEnd();
-		glPopMatrix();
+	s->vertices[0].x = s->vertices[0].y += myRandom(0, 0.005);
+	s->vertices[1].x = s->vertices[1].y += myRandom(0, 0.005);
+	s->vertices[2].x = s->vertices[2].y += myRandom(0, 0.005);
+	s->vertices[3].x = s->vertices[3].y += myRandom(0, 0.005);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glBegin(GL_LINES);
+	for (int i = 0; i < 3; i++)
+	{
+		glVertex2f(s->vertices[i].x, s->vertices[i].y);
+		glVertex2f(s->vertices[i + 1].x, s->vertices[i + 1].y);
+	}
+	glEnd();
+	glPopMatrix();
 }
 
 void MoveShip(Ship* s)
@@ -565,7 +575,7 @@ void MovePhoton(Photon* p)
 	p->x += p->dx;
 	p->y += p->dy;
 	/*	If the photon extends past the limits of the screen,
-		terminate it.*/
+	terminate it.*/
 	if (p->x < 0 || p->y < 0 || p->x > xMax || p->y > yMax)
 	{
 		p->x = ship.x;
@@ -579,35 +589,23 @@ void drawAsteroid(Asteroid *a)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glPushMatrix();
-
-
 	myTranslate2D(a->x, a->y);
 	myRotate2D(a->phi);
 
 	glBegin(GL_POLYGON);
-	for (int i = 0; i < a->nVertices; i++)
+	if (roundAsteroids)
 	{
-		glVertex2f(a->coords[i].x, a->coords[i].y);
+		for (int i = 0; i < 40; i++)
+		{
+			glVertex2f(a->rad*cos(i*M_PI/20), a->rad*sin(i*M_PI/20));
+		}
 	}
-	glEnd();
-
-	glPopMatrix();
-}
-
-void DrawCircle(Asteroid* a)
-{
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glPushMatrix();
-
-
-	myTranslate2D(a->x, a->y);
-	myRotate2D(a->phi);
-
-	glBegin(GL_POLYGON);
-	for (i = 0; i<40; i++)
+	else
 	{
-		glVertex2d(cos(i*M_PI / 20.0), sin(i*M_PI / 20.0));
+		for (int i = 0; i < a->nVertices; i++)
+		{
+			glVertex2f(a->coords[i].x, a->coords[i].y);
+		}
 	}
 	glEnd();
 
@@ -640,7 +638,7 @@ void MoveAsteroid(Asteroid* a)
 void SplitAsteroid(Asteroid* a)
 {
 	/*	If the asteroid ha a radius larger than 1, we consider it
-		as a candidate for splitting.*/
+	as a candidate for splitting.*/
 	if (a->rad > 3)
 	{
 		float dx = a->dx, dy = a->dy;
@@ -655,7 +653,7 @@ void SplitAsteroid(Asteroid* a)
 			initAsteroid(b, a->x + a->dx *0.5, a->y + a->dy, 0.8*a->rad);
 			activeAsteroids++;
 		}
-		initAsteroid(a, a->x+a->dx, a->x+a->dy*0.5, 0.8*a->rad);
+		initAsteroid(a, a->x + a->dx, a->x + a->dy*0.5, 0.8*a->rad);
 		a->dx = 1.5 * dx;
 		a->dy = 0.75*dy;
 		b->dx = 0.75*dx;
@@ -674,7 +672,7 @@ void myIdle()
 }
 
 /*	Detects photon presence in asteroid bounding circle.
-	Returns 1 if true, */
+Returns 1 if true, */
 int InAsteroidBounds(Asteroid* a, Photon* p)
 {
 	if (a->active == 0 || p->active == 0)
@@ -682,21 +680,21 @@ int InAsteroidBounds(Asteroid* a, Photon* p)
 		return 0;
 	}
 	/*	Given a circle with a center cX, cY and a point with coordinates pX, pY,
-		we define a circle as follows:
+	we define a circle as follows:
 
-		diffX = cX - pX
-		diffY = cY - pY
-		powX = diffX^2
-		powY = diffY^2
-		dist = sqrt(powX + powY)
+	diffX = cX - pX
+	diffY = cY - pY
+	powX = diffX^2
+	powY = diffY^2
+	dist = sqrt(powX + powY)
 
-		*/
+	*/
 	float pDist = pow(a->x - p->x, 2) + pow(a->y - p->y, 2);
 
 	/*	If the squared distance between the point and the center of the circle is
-		smaller than or equal to the squared radius, then we are within the
-		bounding circle of the asteroid.*/
-	if (pDist <= a->rad*a->rad)
+	smaller than or equal to the squared radius, then we are within the
+	bounding circle of the asteroid.*/
+	if (pDist < a->rad*a->rad)
 	{
 		SplitAsteroid(a);
 		p->active = 0;
@@ -718,7 +716,7 @@ int CheckPointCollision(Asteroid* a, float x, float y)
 	}
 	float pDist = pow(a->x - x, 2) + pow(a->y - y, 2);
 	/*	If the point is not in the asteroid, return false.*/
-	if (a->rad*a->rad*0.6 <= pDist)
+	if (a->rad*a->rad*0.6 < pDist)
 	{
 		return 0;
 	}
@@ -733,10 +731,10 @@ int CheckShipCollision(Ship* s, Asteroid* a)
 	float pDist = 0;
 	int collision = 0;
 	/*	For each vertex of the ship, check if it is in the bounding circle of
-		the asteroid*/
+	the asteroid*/
 	for (int i = 0; i < 4; i++)
 	{
-		collision += CheckPointCollision(a, s->vertices[i].x+s->x, s->vertices[i].y+s->y);
+		collision += CheckPointCollision(a, s->vertices[i].x + s->x, s->vertices[i].y + s->y);
 	}
 	printf("Collision: %d\n", collision);
 

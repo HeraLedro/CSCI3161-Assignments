@@ -1,11 +1,10 @@
 TODO:
-    -   PRIORITY
-        -   Keystroke to switch between circular and polygonal asteroids
-            (assignment requirement)
-        -
 
-    -   Not Priority
-        -   Modulate the code - split up into Ship, Asteroid, and Photon
-            classes.
-        -
-        
+    -   Modulate the code - split up into Ship, Asteroid, and Photon
+        classes.
+    -   Make ship explode
+    -   Make asteroids explode
+    -   Display score
+    -   Implement strict point-to-polygon detection
+    -   Remove code redundancies
+    -   General bug removal
