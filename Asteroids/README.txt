@@ -5,6 +5,23 @@
     compiled with both g++ and gcc.
 
 
+---Controls---
+
+    Movement
+        Turn Left       =   [LEFT ARROW]
+        Turn Right      =   [RIGHT ARROW]
+        Move Forward    =   [FORWARD ARROW]
+        Move Backward   =   [BACK ARROW]
+
+    Photon
+        Fire = [SPACE]
+
+    Change Asteroid Shape
+        Change Between Circle and Polygon   =   [S]
+
+    Quit Game   =   [Q]
+
+
 ---Process---
 
     The primary problem in this program was the ship movement - understanding
@@ -21,9 +38,28 @@
     by an angle (dphi) at each frame.
 
 
----Aspects---
+---Game Objects---
 
+    Ship
+        The main player sprite. With the press of a button, the ship can turn
+        left or right and fly forward or back based on its current orientation.
+        A player can fire a photon from the ship. When the ship center leaves
+        the boundaries of the screen, the ship is moved to the other side of the
+        appropriate axis.
 
+    Asteroid
+        The object of the game is to destroy these asteroids. They fly around
+        the screen with random initial trajectories and rotations. If a large
+        enough asteroid is destroyed, it will spawn two smaller asteroids which
+        split apart and travel based on the trajectory of their parent. An
+        asteroid can be destroyed by colliding with a photon. Collision between
+        a ship and an asteroid ends in a game over and restarts the game. Like
+        ships, asteroids 'wrap' around the screen.
+
+    Photon
+        The sprite fired by the player. Any photon which impacts an asteroid
+        destroys it. Photons do not wrap around the screen like asteroids and
+        ships.
 
 
 ---Left to Implement---
@@ -53,7 +89,10 @@
 
     Strict Polygon-to-Polygon Collision
         For the purposes of this assignment, polygon-to-polygon collision a
-        polish aspect. I currently use a
+        polish aspect. I currently use a point-to-circle collision detection
+        to check if my ships or photons are reasonably within the bounds of my
+        asteroid. In the future I'd like to implement a legitimate polygon-to-
+        polygon collision detection.
 
     Remove Redundancies, Bugs
         As with any development project, along the way there were a build-up
