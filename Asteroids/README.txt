@@ -58,8 +58,7 @@
 
     Photon
         The sprite fired by the player. Any photon which impacts an asteroid
-        destroys it. Photons do not wrap around the screen like asteroids and
-        ships.
+        destroys it. Photons do not wrap around the screen like asteroids.
 
 
 ---Left to Implement---
